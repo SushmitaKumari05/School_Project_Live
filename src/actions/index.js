@@ -69,7 +69,20 @@ export const noticePost = (formProps) => async (dispatch) => {
       formProps
     );
 
-    dispatch({ type: NOTICE_POST, payload: response.data });
+    //
+    const accessToken = localStorage.getItem('token')
+    axios.interceptors.request.use(
+      config =>{
+        config.headers.authorization = `Bearer ${accessToken}`;
+        config.headers.content_type = `application/json`;
+        return config;
+      },
+      error => {
+        return Promise.reject(error);
+      })
+
+    //
+     dispatch({ type: NOTICE_POST, payload: response.data });
   } catch (error) {
     console.log(error);
   }
